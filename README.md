@@ -2,7 +2,7 @@
 
 **Turn your ingredients into inspiration.** Fork & Fetch is an AI-powered culinary assistant that analyzes photos of your fridge or pantry and generates custom recipes instantly. Built with Next.js, TypeScript, Tailwind CSS, Google Gemini.
 
-![Project Preview](https://via.placeholder.com/800x400?text=App+Screenshot+Here) 
+![Live Demo]((https://forkfetch.vercel.app)) 
 ## Features
 
 - ** Visual Ingredient Analysis:** Upload a photo of your fridge, and the AI identifies ingredients automatically.
