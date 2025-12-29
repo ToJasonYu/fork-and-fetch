@@ -5,6 +5,6 @@
 
 ## Features
 
-- ** Visual Ingredient Analysis:** Upload a photo of your fridge or type in your ingredients, and the AI identifies ingredients automatically.
-- ** Smart Constraints:** Filter recipes by meal type (Breakfast, Lunch, Dinner, Snack) and cooking time.
-- ** Responsive UI:** Beautiful, mobile-friendly interface built with Tailwind CSS.
+- Visual Ingredient Analysis: Upload a photo of your fridge or type in your ingredients, and the AI identifies ingredients automatically.
+- Smart Constraints: Filter recipes by meal type (Breakfast, Lunch, Dinner, Snack) and cooking time.
+- Responsive UI: Beautiful, mobile-friendly interface built with Tailwind CSS.
