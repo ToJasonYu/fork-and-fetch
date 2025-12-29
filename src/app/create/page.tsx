@@ -15,17 +15,18 @@ export default function CreatePage() {
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [mimeType, setMimeType] = useState<string | null>(null);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  // --- UPDATED: onDrop now uses the resizer ---
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        const base64Data = result.split(",")[1];
-        setImageBase64(base64Data);
-        setMimeType(file.type);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressedBase64 = await resizeImage(file);
+        setImageBase64(compressedBase64);
+        setMimeType("image/jpeg"); // Resized images are always JPEG
+      } catch (err) {
+        console.error("Error resizing image", err);
+        alert("Could not process image. Please try another.");
+      }
     }
   }, []);
 
@@ -130,7 +131,6 @@ export default function CreatePage() {
               <option>Slow Cook</option>
             </select>
 
-            {/* BUTTON RESTORED: Orange, Visible Text, Nice Shadow */}
             <button
               type="submit"
               disabled={(!ingredients && !imageBase64) || isSubmitting}
@@ -144,3 +144,45 @@ export default function CreatePage() {
     </div>
   );
 }
+
+// --- NEW: Helper function to compress images ---
+const resizeImage = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 800; // Resize to max 800px width
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Compress to JPEG at 70% quality
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+        resolve(dataUrl.split(",")[1]); 
+      };
+      img.onerror = (error) => reject(error);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};
